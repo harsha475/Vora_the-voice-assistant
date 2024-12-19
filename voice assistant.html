@@ -1,0 +1,109 @@
+# HTML, CSS, and JS, combined  code for basic user interaction.
+html_code = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friday Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .input-section {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-section {
+            margin-top: 20px;
+        }
+
+        #responseOutput {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Friday Assistant</h1>
+        <div class="input-section">
+            <input type="text" id="commandInput" placeholder="Enter your command here...">
+            <button onclick="sendCommand()">Send</button>
+        </div>
+        <div class="output-section">
+            <h3>Assistant Response:</h3>
+            <p id="responseOutput">Awaiting your command...</p>
+        </div>
+    </div>
+    <script>
+        async function sendCommand() {
+            const command = document.getElementById("commandInput").value;
+            if (!command) {
+                alert("Please enter a command.");
+                return;
+            }
+
+            const responseOutput = document.getElementById("responseOutput");
+            responseOutput.innerText = "Processing...";
+
+            try {
+                const response = await fetch("/assistant", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ command: command }),
+                });
+
+                const result = await response.json();
+                responseOutput.innerText = `Response: ${result.response}\nSentiment: ${result.sentiment}`;
+            } catch (error) {
+                responseOutput.innerText = "Error: Unable to process the request.";
+                console.error("Error:", error);
+            }
+        }
+    </script>
+</body>
+</html>
